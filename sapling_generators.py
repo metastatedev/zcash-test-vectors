@@ -18,14 +18,14 @@ URS = b'096b36a5804bfacef1691e173c366a47ff5ba84a44f26ddd7e8d9f79d5b42df0'
 # Group hash
 #
 
-def group_hash(D, M):
+def group_hash(D, M, std = True):
     digest = blake2s(person=D)
-    digest.update(URS)
+    if std: digest.update(URS)
     digest.update(M)
     p = Point.from_bytes(digest.digest())
     if p is None:
         return None
-    q = p * JUBJUB_COFACTOR
+    q = p * JUBJUB_COFACTOR if std else p
     if q == Point.ZERO:
         return None
     return q
@@ -43,16 +43,17 @@ def find_group_hash(D, M):
 #
 # Sapling generators
 #
+ASSET_ID = b'sO\x0e\xc5os\x1e\x02\xccs~ki=\xb5+\x82\x1fonL\xd7\xfe<vCS\xf2cf\x9f\xbe' # AssetType b'default' under old repeated hashing derivation
 
-SPENDING_KEY_BASE = find_group_hash(b'Zcash_G_', b'')
-PROVING_KEY_BASE = find_group_hash(b'Zcash_H_', b'')
-NOTE_POSITION_BASE = find_group_hash(b'Zcash_J_', b'')
-WINDOWED_PEDERSEN_RANDOMNESS_BASE = find_group_hash(b'Zcash_PH', b'r')
-VALUE_COMMITMENT_VALUE_BASE = find_group_hash(b'Zcash_cv', b'v')
-VALUE_COMMITMENT_RANDOMNESS_BASE = find_group_hash(b'Zcash_cv', b'r')
+SPENDING_KEY_BASE = find_group_hash(b'MASP__G_', b'')
+PROVING_KEY_BASE = find_group_hash(b'MASP__H_', b'')
+NOTE_POSITION_BASE = find_group_hash(b'MASP__J_', b'')
+WINDOWED_PEDERSEN_RANDOMNESS_BASE = find_group_hash(b'MASP__PH', b'r')
+VALUE_COMMITMENT_VALUE_BASE = group_hash(b'MASP__v_', ASSET_ID, std=False)
+VALUE_COMMITMENT_RANDOMNESS_BASE = find_group_hash(b'MASP__r_', b'r')
 
 required_bases = 4
-PEDERSEN_BASES = [find_group_hash(b'Zcash_PH', i2leosp(32, iminus1))
+PEDERSEN_BASES = [find_group_hash(b'MASP__PH', i2leosp(32, iminus1))
                   for iminus1 in range(0, required_bases)]
 
 def main():

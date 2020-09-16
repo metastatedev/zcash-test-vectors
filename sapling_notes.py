@@ -9,11 +9,13 @@ from sapling_pedersen import (
 )
 from sapling_utils import i2lebsp
 
-def note_commit(rcm, g_d, pk_d, v):
-    return windowed_pedersen_commitment(rcm, [1] * 6 + i2lebsp(64, v) + g_d + pk_d)
+from sapling_generators import VALUE_COMMITMENT_VALUE_BASE
+
+def note_commit(rcm, g_d, pk_d, v, ag):
+    return windowed_pedersen_commitment(rcm, [1] * 6 + ag + i2lebsp(64, v) + g_d + pk_d)
 
 def prf_nf_sapling(nk_star, rho_star):
-    digest = blake2s(person=b'Zcash_nf')
+    digest = blake2s(person=b'MASP__nf')
     digest.update(nk_star)
     digest.update(rho_star)
     return digest.digest()

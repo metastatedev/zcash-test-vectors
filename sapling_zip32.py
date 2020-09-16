@@ -43,7 +43,7 @@ class ExtendedBase(object):
 
     def fingerprint(self):
         FVK = bytes(self.ak()) + bytes(self.nk()) + self.ovk()
-        return blake2b(person=b'ZcashSaplingFVFP', digest_size=32, data=FVK).digest()
+        return blake2b(person=b'MASP_SaplingFVFP', digest_size=32, data=FVK).digest()
 
     def tag(self):
         return self.fingerprint()[:4]
@@ -62,7 +62,7 @@ class ExtendedSpendingKey(DerivedAkNk, DerivedIvk, ExtendedBase):
 
     @classmethod
     def master(cls, S):
-        I     = blake2b(person=b'ZcashIP32Sapling', data=S).digest()
+        I     = blake2b(person=b'MASP_IP32Sapling', data=S).digest()
         I_L   = I[:32]
         I_R   = I[32:]
         sk_m  = I_L

@@ -12,7 +12,7 @@ from tv_output import render_args, render_tv
 
 
 def H(x):
-    digest = blake2b(person=b'Zcash_RedJubjubH')
+    digest = blake2b(person=b'MASP__RedJubjubH')
     digest.update(x)
     return digest.digest()
 

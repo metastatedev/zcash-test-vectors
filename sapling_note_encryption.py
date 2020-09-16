@@ -15,13 +15,13 @@ from tv_output import render_args, render_tv
 
 
 def kdf_sapling(shared_secret, epk):
-    digest = blake2b(digest_size=32, person=b'Zcash_SaplingKDF')
+    digest = blake2b(digest_size=32, person=b'MASP__SaplingKDF')
     digest.update(bytes(shared_secret))
     digest.update(bytes(epk))
     return digest.digest()
 
 def prf_ock(ovk, cv, cmu, ephemeral_key):
-    digest = blake2b(digest_size=32, person=b'Zcash_Derive_ock')
+    digest = blake2b(digest_size=32, person=b'MASP__Derive_ock')
     digest.update(ovk)
     digest.update(cv)
     digest.update(cmu)
@@ -123,7 +123,8 @@ def main():
             np.rcm,
             leos2bsp(bytes(g_d)),
             leos2bsp(bytes(pk_d)),
-            np.v)
+            np.v,
+            leos2bsp(bytes(VALUE_COMMITMENT_VALUE_BASE)))
 
         (
             esk, epk,

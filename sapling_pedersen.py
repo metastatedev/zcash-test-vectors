@@ -50,7 +50,7 @@ def mixing_pedersen_hash(P, x):
 #
 
 def windowed_pedersen_commitment(r, s):
-    return pedersen_hash_to_point(b'Zcash_PH', s) + WINDOWED_PEDERSEN_RANDOMNESS_BASE * r
+    return pedersen_hash_to_point(b'MASP__PH', s) + WINDOWED_PEDERSEN_RANDOMNESS_BASE * r
 
 def homomorphic_pedersen_commitment(rcv, D, v):
     return find_group_hash(D, b'v') * v + find_group_hash(D, b'r') * rcv

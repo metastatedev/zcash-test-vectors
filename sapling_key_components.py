@@ -3,7 +3,7 @@ import sys; assert sys.version_info[0] >= 3, "Python 3 required."
 
 from pyblake2 import blake2b, blake2s
 
-from sapling_generators import PROVING_KEY_BASE, SPENDING_KEY_BASE, group_hash
+from sapling_generators import PROVING_KEY_BASE, SPENDING_KEY_BASE, group_hash, VALUE_COMMITMENT_VALUE_BASE
 from sapling_jubjub import Fr
 from sapling_merkle_tree import MERKLE_DEPTH
 from sapling_notes import note_commit, note_nullifier
@@ -23,20 +23,20 @@ def to_scalar(buf):
 #
 
 def prf_expand(sk, t):
-    digest = blake2b(person=b'Zcash_ExpandSeed')
+    digest = blake2b(person=b'MASP__ExpandSeed')
     digest.update(sk)
     digest.update(t)
     return digest.digest()
 
 def crh_ivk(ak, nk):
-    digest = blake2s(person=b'Zcashivk')
+    digest = blake2s(person=b'MASP_ivk')
     digest.update(ak)
     digest.update(nk)
     ivk = digest.digest()
     return leos2ip(ivk) % 2**251
 
 def diversify_hash(d):
-    return group_hash(b'Zcash_gd', d)
+    return group_hash(b'MASP__gd', d)
 
 #
 # Key components
@@ -111,7 +111,8 @@ def main():
             note_r,
             leos2bsp(bytes(diversify_hash(sk.default_d()))),
             leos2bsp(bytes(sk.default_pkd())),
-            note_v)
+            note_v,
+            leos2bsp(bytes(VALUE_COMMITMENT_VALUE_BASE)))
         note_pos = (980705743285409327583205473820957432*i) % 2**MERKLE_DEPTH
         note_nf = note_nullifier(sk.nk(), note_cm, Fr(note_pos))
         test_vectors.append({
