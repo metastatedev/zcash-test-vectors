@@ -20,25 +20,25 @@ SIGHASH_ANYONECANPAY = 0x80
 NOT_AN_INPUT = -1 # For portability of the test vectors; replaced with None for Rust
 
 def getHashPrevouts(tx):
-    digest = blake2b(digest_size=32, person=b'ZcashPrevoutHash')
+    digest = blake2b(digest_size=32, person=b'MASP_PrevoutHash')
     for x in tx.vin:
         digest.update(bytes(x.prevout))
     return digest.digest()
 
 def getHashSequence(tx):
-    digest = blake2b(digest_size=32, person=b'ZcashSequencHash')
+    digest = blake2b(digest_size=32, person=b'MASP_SequencHash')
     for x in tx.vin:
         digest.update(struct.pack('<I', x.nSequence))
     return digest.digest()
 
 def getHashOutputs(tx):
-    digest = blake2b(digest_size=32, person=b'ZcashOutputsHash')
+    digest = blake2b(digest_size=32, person=b'MASP_OutputsHash')
     for x in tx.vout:
         digest.update(bytes(x))
     return digest.digest()
 
 def getHashJoinSplits(tx):
-    digest = blake2b(digest_size=32, person=b'ZcashJSplitsHash')
+    digest = blake2b(digest_size=32, person=b'MASP_JSplitsHash')
     for jsdesc in tx.vJoinSplit:
         digest.update(bytes(jsdesc))
     digest.update(tx.joinSplitPubKey)
@@ -64,7 +64,7 @@ def signature_hash(scriptCode, tx, nIn, nHashType, amount, consensusBranchId):
         hashOutputs = getHashOutputs(tx)
     elif (nHashType & 0x1f) == SIGHASH_SINGLE and \
         0 <= nIn and nIn < len(tx.vout):
-        digest = blake2b(digest_size=32, person=b'ZcashOutputsHash')
+        digest = blake2b(digest_size=32, person=b'MASP_OutputsHash')
         digest.update(bytes(tx.vout[nIn]))
         hashOutputs = digest.digest()
 
@@ -73,7 +73,7 @@ def signature_hash(scriptCode, tx, nIn, nHashType, amount, consensusBranchId):
 
     digest = blake2b(
         digest_size=32,
-        person=b'ZcashSigHash' + struct.pack('<I', consensusBranchId),
+        person=b'MASP_SigHash' + struct.pack('<I', consensusBranchId),
     )
 
     digest.update(struct.pack('<I', tx.header()))

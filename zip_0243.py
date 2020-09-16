@@ -25,7 +25,7 @@ from zip_0143 import (
 
 
 def getHashShieldedSpends(tx):
-    digest = blake2b(digest_size=32, person=b'ZcashSSpendsHash')
+    digest = blake2b(digest_size=32, person=b'MASP_SSpendsHash')
     for desc in tx.vShieldedSpends:
         # We don't pass in serialized form of desc as spendAuthSig is not part of the hash
         digest.update(bytes(desc.cv))
@@ -36,7 +36,7 @@ def getHashShieldedSpends(tx):
     return digest.digest()
 
 def getHashShieldedOutputs(tx):
-    digest = blake2b(digest_size=32, person=b'ZcashSOutputHash')
+    digest = blake2b(digest_size=32, person=b'MASP_SOutputHash')
     for desc in tx.vShieldedOutputs:
         digest.update(bytes(desc))
     return digest.digest()
@@ -62,7 +62,7 @@ def signature_hash(scriptCode, tx, nIn, nHashType, amount, consensusBranchId):
         hashOutputs = getHashOutputs(tx)
     elif (nHashType & 0x1f) == SIGHASH_SINGLE and \
         0 <= nIn and nIn < len(tx.vout):
-        digest = blake2b(digest_size=32, person=b'ZcashOutputsHash')
+        digest = blake2b(digest_size=32, person=b'MASP_OutputsHash')
         digest.update(bytes(tx.vout[nIn]))
         hashOutputs = digest.digest()
 
@@ -77,7 +77,7 @@ def signature_hash(scriptCode, tx, nIn, nHashType, amount, consensusBranchId):
 
     digest = blake2b(
         digest_size=32,
-        person=b'ZcashSigHash' + struct.pack('<I', consensusBranchId),
+        person=b'MASP_SigHash' + struct.pack('<I', consensusBranchId),
     )
 
     digest.update(struct.pack('<I', tx.header()))
